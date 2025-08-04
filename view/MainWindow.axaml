@@ -8,8 +8,49 @@
     <StackPanel>
          <TextBlock x:Name="DisplayTime" Text="00:00" FontSize="48" HorizontalAlignment="Center" Margin="0,5" />
         <TextBlock x:Name="DisplayProgress" Text="" FontSize="16" HorizontalAlignment="Center" Margin="0,0,0,10" />
+        <Border BorderBrush="Gray" BorderThickness="1" Padding="10" CornerRadius="5">
+            <StackPanel Spacing="10">
+                <TextBlock Text="MENU FÁCIL" FontWeight="Bold" HorizontalAlignment="Center" />
 
-        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*,*,*" Margin="10">
+                <Grid RowDefinitions="*,*" ColumnDefinitions="*, auto, *, auto, *">
+
+                    <Panel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Width="1" Background="Gray" />
+                    <Panel Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" Width="1" Background="Gray" />
+
+                    <Button Grid.Row="0" Grid.Column="0" Name="PipocaButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
+                            <TextBlock Text="Pipoca" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Grid.Row="0" Grid.Column="2" Name="LeiteButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
+                            <TextBlock Text="Leite" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Grid.Row="0" Grid.Column="4" Name="CarneBoiButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
+                            <TextBlock Text="Carnes de Boi" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Grid.Row="1" Grid.Column="0" Name="FrangoButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
+                            <TextBlock Text="Frango" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Grid.Row="1" Grid.Column="2" Name="FeijaoButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
+                            <TextBlock Text="Feijão" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    
+                </Grid>
+            </StackPanel>
+        </Border>
+        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*,*,*" Name="NumericKeypad" Margin="10">
             <Button Content="1" Grid.Row="0" Grid.Column="0" Margin="5" Click="OnNumberClick" />
             <Button Content="2" Grid.Row="0" Grid.Column="1" Margin="5" Click="OnNumberClick" />
             <Button Content="3" Grid.Row="0" Grid.Column="2" Margin="5" Click="OnNumberClick" />
@@ -24,8 +65,9 @@
 
             <Button Content="0" Grid.Row="3" Grid.Column="1" Margin="5" Click="OnNumberClick" />
 
-            <Button Content="Potência" Grid.Row="4" Grid.Column="1" Margin="5" Click="OnPowerClick" />
-
+            <Button Content="Potência" Grid.Row="4" Grid.Column="1" Margin="5" Name="PowerButton" Click="OnPowerClick" />
+        </Grid>
+        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*,*,*" Name="ActionKeypad" Margin="10">
             <Button Content="Ligar +30" Grid.Row="4" Grid.Column="0" Margin="5" Click="OnStartOrAddTimeClick" />
             <Button Content="Desligar" Grid.Row="4" Grid.Column="2" Margin="5" Click="OnPauseOrCancelClick" />
         </Grid>

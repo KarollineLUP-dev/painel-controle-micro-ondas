@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using Avalonia.Controls;
@@ -6,6 +7,7 @@ using Avalonia.Diagnostics;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using painel_controle_micro_ondas.controller;
+using painel_controle_micro_ondas.data;
 using painel_controle_micro_ondas.enums;
 
 namespace painel_controle_micro_ondas.model;
@@ -16,6 +18,7 @@ public partial class MainWindow : Window
     private string _inputBuffer = string.Empty;
     private int _power = 10;
     private InputState _currentMode = InputState.Time;
+    private HeatingProgram? _selectedProgram;
 
     public MainWindow()
     {
@@ -37,7 +40,7 @@ public partial class MainWindow : Window
     {
         if (_microondasController.Status == StatusMicroOndas.Running || sender is not Button button)
         {
-            return; 
+            return;
         }
 
         if (_currentMode == InputState.Power && _inputBuffer.Length == 0)
@@ -57,7 +60,7 @@ public partial class MainWindow : Window
         {
             DisplayTime.Text = _inputBuffer;
         }
-        else 
+        else
         {
             string paddedDigits = _inputBuffer.PadLeft(4, '0');
             string maskedText = $"{paddedDigits.Substring(0, 2)}:{paddedDigits.Substring(2, 2)}";
@@ -78,6 +81,19 @@ public partial class MainWindow : Window
     private void OnStartOrAddTimeClick(object sender, RoutedEventArgs e)
     {
         int timeToHeat;
+        if (_selectedProgram != null)
+        {
+           
+            _microondasController.StartHeating(_selectedProgram);
+            return; 
+        }
+
+        if (_microondasController.Status != StatusMicroOndas.Idle)
+        {
+            _microondasController.StartOrAddTime();
+            return;
+        }
+
 
         if (_microondasController.Status != StatusMicroOndas.Idle)
         {
@@ -144,6 +160,9 @@ public partial class MainWindow : Window
             _microondasController.PauseOrCancel();
         }
 
+        NumericKeypad.IsEnabled = true;
+        PowerButton.IsEnabled = true;
+        _selectedProgram = null;
     }
 
 
@@ -169,9 +188,13 @@ public partial class MainWindow : Window
             _inputBuffer = "";
             _power = 10;
             DisplayTime.Text = "00:00";
+
+            NumericKeypad.IsEnabled = true; 
+            PowerButton.IsEnabled = true;  
+            _selectedProgram = null;
         });
     }
-    
+
     private int ParseTime(string input)
     {
         string paddedInput = input.PadLeft(4, '0');
@@ -191,6 +214,40 @@ public partial class MainWindow : Window
         return totalSeconds;
     }
 
+    private void OnPresetProgramClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button clickedButton || clickedButton.Content is not StackPanel panel)
+        {
+            return;
+        }
+
+        var textBlock = panel.Children.OfType<TextBlock>().FirstOrDefault();
+        string? programNameToFind = textBlock?.Text;
+
+        if (string.IsNullOrEmpty(programNameToFind))
+        {
+            return;
+        }
+
+        var programs = PresetPrograms.GetPrograms();
+        var foundProgram = programs.FirstOrDefault(p => p.Name == programNameToFind);
+
+        if (foundProgram != null)
+        {
+            ApplyProgramSettings(foundProgram);
+        }
+
+    }
+    private void ApplyProgramSettings(HeatingProgram program)
+    {
+        _selectedProgram = program;
+
+        DisplayTime.Text = $"{program.TimeInSeconds / 60:00}:{program.TimeInSeconds % 60:00}";
+        DisplayProgress.Text = program.Instructions;
+
+        NumericKeypad.IsEnabled = false; 
+        PowerButton.IsEnabled = false; 
+    }
 }
 
 
