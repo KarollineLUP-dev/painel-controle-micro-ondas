@@ -9,7 +9,7 @@ namespace painel_controle_micro_ondas.model
         public string Food { get; init; } = string.Empty;
         public int TimeInSeconds { get; init; }
         public int Power { get; init; }
-        public char HeatingString { get; init; }
+        public char HeatingChar { get; init; }
         public string Instructions { get; init; } = string.Empty;
 
         [JsonIgnore] 

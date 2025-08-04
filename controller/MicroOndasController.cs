@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using painel_controle_micro_ondas.enums;
 using painel_controle_micro_ondas.model;
@@ -108,7 +104,7 @@ public class MicroOndasController
 
         if (_activeProgram != null)
         {
-            string stringBlock = new string(_activeProgram.HeatingString, power);
+            string stringBlock = new string(_activeProgram.HeatingChar, power);
             return string.Join(" ", Enumerable.Repeat(stringBlock, seconds));
         }
         else 
@@ -143,6 +139,7 @@ public class MicroOndasController
         Status = StatusMicroOndas.Idle;
         TimeInSec = 0;
         Power = 10;
+        _activeProgram = null;
         _timer.Stop();
 
         TimeChanged?.Invoke(this, TimeInSec);

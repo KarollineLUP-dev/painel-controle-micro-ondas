@@ -4,7 +4,7 @@
     "Food": "Pipoca (de micro-ondas)",
     "TimeInSeconds": 180,
     "Power": 7,
-    "HeatingString": "&",
+    "HeatingChar": "&",
     "Instructions": "Observar o barulho de estouros do milho, caso houver um intervalo de mais de 10 segundos entre um estouro e outro, interrompa o aquecimento."
   },
   {
@@ -12,7 +12,7 @@
     "Food": "Leite",
     "TimeInSeconds": 300,
     "Power": 5,
-    "HeatingString": "$",
+    "HeatingChar": "$",
     "Instructions": "Cuidado com aquecimento de líquidos, o choque térmico aliado ao movimento do recipiente pode causar fervura imediata causando risco de queimaduras."
   },
   {
@@ -20,7 +20,7 @@
     "Food": "Carne em pedaço ou fatias",
     "TimeInSeconds": 840,
     "Power": 4,
-    "HeatingString": "@",
+    "HeatingChar": "@",
     "Instructions": "Interrompa o processo na metade e vire o conteúdo com a parte de baixo para cima para o descongelamento uniforme."
   },
   {
@@ -28,7 +28,7 @@
     "Food": "Frango (qualquer corte)",
     "TimeInSeconds": 480,
     "Power": 7,
-    "HeatingString": "#",
+    "HeatingChar": "#",
     "Instructions": "Interrompa o processo na metade e vire o conteúdo com a parte de baixo para cima para o descongelamento uniforme."
   },
   {
@@ -36,7 +36,7 @@
     "Food": "Feijão congelado",
     "TimeInSeconds": 480,
     "Power": 9,
-    "HeatingString": "%",
+    "HeatingChar": "%",
     "Instructions": "Deixe o recipiente destampado e em casos de plástico, cuidado ao retirar o recipiente pois o mesmo pode perder resistência em altas temperaturas."
   }
 ]

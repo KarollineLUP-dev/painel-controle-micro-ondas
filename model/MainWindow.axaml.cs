@@ -1,9 +1,6 @@
 using System;
 using System.Linq;
-using System.Runtime.Intrinsics.Arm;
-using System.Text;
 using Avalonia.Controls;
-using Avalonia.Diagnostics;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using painel_controle_micro_ondas.controller;
@@ -19,6 +16,8 @@ public partial class MainWindow : Window
     private int _power = 10;
     private InputState _currentMode = InputState.Time;
     private HeatingProgram? _selectedProgram;
+    private readonly DispatcherTimer _carouselText;
+    private string _fullInstructionsText = "";
 
     public MainWindow()
     {
@@ -30,6 +29,12 @@ public partial class MainWindow : Window
         _microondasController.HeatingProgressChanged += OnHeatingProgressChanged;
         _microondasController.HeatingFinished += (s, e) => UpdateDisplayAfterHeating();
         _microondasController.HeatingCancelled += (s, e) => UpdateDisplayAfterHeating();
+
+        _carouselText = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(200)
+        };
+        _carouselText.Tick += CarouselText_Tick;
 
         DisplayTime.Text = "00:00";
         DisplayProgress.Text = "";
@@ -73,7 +78,7 @@ public partial class MainWindow : Window
         _currentMode = InputState.Power;
         _inputBuffer = "";
         DisplayTime.Text = _power.ToString();
-        DisplayProgress.Text = "Digite a nova potência";
+        DisplayProgress.Text = "Digite a Nova Potência";
 
     }
 
@@ -83,17 +88,10 @@ public partial class MainWindow : Window
         int timeToHeat;
         if (_selectedProgram != null)
         {
-           
-            _microondasController.StartHeating(_selectedProgram);
-            return; 
-        }
 
-        if (_microondasController.Status != StatusMicroOndas.Idle)
-        {
-            _microondasController.StartOrAddTime();
+            _microondasController.StartHeating(_selectedProgram);
             return;
         }
-
 
         if (_microondasController.Status != StatusMicroOndas.Idle)
         {
@@ -108,11 +106,11 @@ public partial class MainWindow : Window
                 if (int.TryParse(_inputBuffer, out int newPower) && newPower >= 1 && newPower <= 10)
                 {
                     _power = newPower;
-                    DisplayProgress.Text = $"Potência definida: {_power}";
+                    DisplayProgress.Text = $"Potência Definida: {_power}";
                 }
                 else
                 {
-                    DisplayProgress.Text = "Erro: Potência inválida (1-10)";
+                    DisplayProgress.Text = "Erro: Potência Inválida (1-10)";
                     _inputBuffer = "";
                     return;
                 }
@@ -176,6 +174,8 @@ public partial class MainWindow : Window
 
     private void OnHeatingProgressChanged(object? sender, string progress)
     {
+        _carouselText.Stop();
+
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             DisplayProgress.Text = progress;
@@ -183,14 +183,16 @@ public partial class MainWindow : Window
     }
     private void UpdateDisplayAfterHeating()
     {
+        _carouselText.Stop();
+
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             _inputBuffer = "";
             _power = 10;
             DisplayTime.Text = "00:00";
 
-            NumericKeypad.IsEnabled = true; 
-            PowerButton.IsEnabled = true;  
+            NumericKeypad.IsEnabled = true;
+            PowerButton.IsEnabled = true;
             _selectedProgram = null;
         });
     }
@@ -216,18 +218,11 @@ public partial class MainWindow : Window
 
     private void OnPresetProgramClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is not Button clickedButton || clickedButton.Content is not StackPanel panel)
-        {
-            return;
-        }
+        if (sender is not Button clickedButton) return;
 
-        var textBlock = panel.Children.OfType<TextBlock>().FirstOrDefault();
-        string? programNameToFind = textBlock?.Text;
+        string? programNameToFind = clickedButton.Content as string;
 
-        if (string.IsNullOrEmpty(programNameToFind))
-        {
-            return;
-        }
+        if (string.IsNullOrEmpty(programNameToFind)) return;
 
         var programs = PresetPrograms.GetPrograms();
         var foundProgram = programs.FirstOrDefault(p => p.Name == programNameToFind);
@@ -245,9 +240,28 @@ public partial class MainWindow : Window
         DisplayTime.Text = $"{program.TimeInSeconds / 60:00}:{program.TimeInSeconds % 60:00}";
         DisplayProgress.Text = program.Instructions;
 
-        NumericKeypad.IsEnabled = false; 
-        PowerButton.IsEnabled = false; 
+        _carouselText.Stop();
+        _fullInstructionsText = program.Instructions + "   ---   ";
+        DisplayProgress.Text = _fullInstructionsText;
+
+        if (_fullInstructionsText.Length > 50) 
+        {
+            _carouselText.Start();
+        }
+
+        NumericKeypad.IsEnabled = false;
+        PowerButton.IsEnabled = false;
     }
+    
+    private void CarouselText_Tick(object? sender, EventArgs e)
+    {
+        var currentText = DisplayProgress.Text ?? "";
+        if (currentText.Length > 1)
+        {
+            DisplayProgress.Text = currentText.Substring(1) + currentText[0];
+        }
+    }
+    
 }
 
 

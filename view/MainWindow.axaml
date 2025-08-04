@@ -2,74 +2,77 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="painel_controle_micro_ondas.model.MainWindow"
-        Title="painel_controle_micro_ondas">
-    <StackPanel>
-         <TextBlock x:Name="DisplayTime" Text="00:00" FontSize="48" HorizontalAlignment="Center" Margin="0,5" />
-        <TextBlock x:Name="DisplayProgress" Text="" FontSize="16" HorizontalAlignment="Center" Margin="0,0,0,10" />
-        <Border BorderBrush="Gray" BorderThickness="1" Padding="10" CornerRadius="5">
-            <StackPanel Spacing="10">
-                <TextBlock Text="MENU FÁCIL" FontWeight="Bold" HorizontalAlignment="Center" />
+        Title="painel_controle_micro_ondas"
+        Width="480" Height="700"
+        Background="#2E2E2E"
+        Foreground="White">
 
-                <Grid RowDefinitions="*,*" ColumnDefinitions="*, auto, *, auto, *">
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#4C4C4C" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.accent-green">
+            <Setter Property="Background" Value="#006400" />
+        </Style>
+        <Style Selector="Button.accent-red">
+            <Setter Property="Background" Value="#8B0000" />
+        </Style>
+    </Window.Styles>
 
-                    <Panel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Width="1" Background="Gray" />
-                    <Panel Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" Width="1" Background="Gray" />
+    <StackPanel Margin="10">
 
-                    <Button Grid.Row="0" Grid.Column="0" Name="PipocaButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
-                            <TextBlock Text="Pipoca" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
+        <Border Background="Black" CornerRadius="5" Padding="10" Margin="5" ClipToBounds="True">
+            <StackPanel HorizontalAlignment="Center">
+                <TextBlock x:Name="DisplayTime" Text="00:00"
+                           FontFamily="Cascadia Code, Consolas, monospace"
+                           FontSize="52" Foreground="#39FF14" 
+                           TextAlignment="Center" />
 
-                    <Button Grid.Row="0" Grid.Column="2" Name="LeiteButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
-                            <TextBlock Text="Leite" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
+                <TextBlock x:Name="DisplayProgress" Text="Pronto"
+                           FontSize="14" Foreground="#39FF14" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
 
-                    <Button Grid.Row="0" Grid.Column="4" Name="CarneBoiButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
-                            <TextBlock Text="Carnes de Boi" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-
-                    <Button Grid.Row="1" Grid.Column="0" Name="FrangoButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
-                            <TextBlock Text="Frango" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-
-                    <Button Grid.Row="1" Grid.Column="2" Name="FeijaoButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OnPresetProgramClick" Margin="5">
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="2">
-                            <TextBlock Text="Feijão" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    
+        <Border BorderBrush="#555" BorderThickness="1" Padding="10,5" CornerRadius="5" Margin="5">
+            <StackPanel Spacing="5">
+                <TextBlock Text="MENU FÁCIL" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,2,0,5" />
+                <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,*">
+                    <Button Name="PipocaButton" Grid.Row="0" Grid.Column="0" Content="Pipoca" HorizontalAlignment="Center" Click="OnPresetProgramClick" />
+                    <Button Name="LeiteButton" Grid.Row="0" Grid.Column="1" Content="Leite" HorizontalAlignment="Center" Click="OnPresetProgramClick" />
+                    <Button Name="CarneBoiButton" Grid.Row="0" Grid.Column="2" Content="Carnes de Boi" HorizontalAlignment="Center" Click="OnPresetProgramClick" />
+                    <Button Name="FrangoButton" Grid.Row="1" Grid.Column="0" Content="Frango" HorizontalAlignment="Center" Click="OnPresetProgramClick" />
+                    <Button Name="FeijaoButton" Grid.Row="1" Grid.Column="1" Content="Feijão" HorizontalAlignment="Center" Click="OnPresetProgramClick" />
                 </Grid>
             </StackPanel>
         </Border>
-        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*,*,*" Name="NumericKeypad" Margin="10">
-            <Button Content="1" Grid.Row="0" Grid.Column="0" Margin="5" Click="OnNumberClick" />
-            <Button Content="2" Grid.Row="0" Grid.Column="1" Margin="5" Click="OnNumberClick" />
-            <Button Content="3" Grid.Row="0" Grid.Column="2" Margin="5" Click="OnNumberClick" />
 
-            <Button Content="4" Grid.Row="1" Grid.Column="0" Margin="5" Click="OnNumberClick" />
-            <Button Content="5" Grid.Row="1" Grid.Column="1" Margin="5" Click="OnNumberClick" />
-            <Button Content="6" Grid.Row="1" Grid.Column="2" Margin="5" Click="OnNumberClick" />
-
-            <Button Content="7" Grid.Row="2" Grid.Column="0" Margin="5" Click="OnNumberClick" />
-            <Button Content="8" Grid.Row="2" Grid.Column="1" Margin="5" Click="OnNumberClick" />
-            <Button Content="9" Grid.Row="2" Grid.Column="2" Margin="5" Click="OnNumberClick" />
-
-            <Button Content="0" Grid.Row="3" Grid.Column="1" Margin="5" Click="OnNumberClick" />
-
-            <Button Content="Potência" Grid.Row="4" Grid.Column="1" Margin="5" Name="PowerButton" Click="OnPowerClick" />
+        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*" Name="NumericKeypad" Margin="5">
+            <Button Content="1" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Click="OnNumberClick" />
+            <Button Content="2" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Click="OnNumberClick" />
+            <Button Content="3" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" Click="OnNumberClick" />
+            
+            <Button Content="4" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Click="OnNumberClick" />
+            <Button Content="5" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Click="OnNumberClick" />
+            <Button Content="6" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Click="OnNumberClick" />
+            
+            <Button Content="7" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Click="OnNumberClick" />
+            <Button Content="8" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Click="OnNumberClick" />
+            <Button Content="9" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" Click="OnNumberClick" />
+            
+            <Button Name="PowerButton" Content="Potência" Grid.Row="3" Grid.Column="0" Click="OnPowerClick" />
+            <Button Content="0" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" Click="OnNumberClick" />
+            
         </Grid>
-        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*,*,*" Name="ActionKeypad" Margin="10">
-            <Button Content="Ligar +30" Grid.Row="4" Grid.Column="0" Margin="5" Click="OnStartOrAddTimeClick" />
-            <Button Content="Desligar" Grid.Row="4" Grid.Column="2" Margin="5" Click="OnPauseOrCancelClick" />
+        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*" Name="ActionKeypad" Margin="5">
+            <Button Name="StartButton" Content="Ligar/+30s" Grid.Row="1" Grid.Column="0" Classes="accent-green" Click="OnStartOrAddTimeClick" />
+            <Button Name="CancelButton" Content="Pausar/Cancelar" Grid.Row="1" Grid.Column="2" Classes="accent-red" Click="OnPauseOrCancelClick" />
         </Grid>
     </StackPanel>
 </Window>
