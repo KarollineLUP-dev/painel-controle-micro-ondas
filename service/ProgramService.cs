@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using painel_controle_micro_ondas.model;
 
@@ -58,6 +59,20 @@ namespace painel_controle_micro_ondas.service
 
             string jsonString = JsonSerializer.Serialize(customPrograms, _jsonOptions);
             File.WriteAllText(CustomFilePath, jsonString);
+        }
+
+        public static void DeleteCustomProgram(string programName)
+        {
+            var customPrograms = GetCustomPrograms();
+
+            var programToRemove = customPrograms.FirstOrDefault(p => p.Name == programName);
+            if (programToRemove != null)
+            {
+                customPrograms.Remove(programToRemove);
+                
+                string jsonString = JsonSerializer.Serialize(customPrograms, _jsonOptions);
+                File.WriteAllText(CustomFilePath, jsonString);
+            }
         }
         
     }

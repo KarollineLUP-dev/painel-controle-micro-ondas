@@ -47,9 +47,9 @@ public partial class MainWindow : Window
         var allPrograms = ProgramService.GetAllPrograms();
         var customPrograms = allPrograms.Where(p => p.IsCustom).ToList();
 
-        CustomProgramsItemsControl.ItemsSource = customPrograms; 
+        CustomProgramsItemsControl.ItemsSource = customPrograms;
         CustomProgramsBorder.IsVisible = customPrograms.Count > 0;
-
+        DeleteProgramButton.IsVisible = customPrograms.Count > 0;
     }
 
     private void OnNumberClick(object? sender, RoutedEventArgs e)
@@ -100,12 +100,14 @@ public partial class MainWindow : Window
         {
 
             _microondasController.StartHeating(_selectedProgram);
+            ActionProgramKeypad.IsEnabled = false;
             return;
         }
 
         if (_microondasController.Status != StatusMicroOndas.Idle)
         {
             _microondasController.StartOrAddTime();
+            ActionProgramKeypad.IsEnabled = false;
             return;
         }
 
@@ -170,6 +172,7 @@ public partial class MainWindow : Window
 
         NumericKeypad.IsEnabled = true;
         PowerButton.IsEnabled = true;
+        ActionProgramKeypad.IsEnabled = true;
         _selectedProgram = null;
     }
 
@@ -203,6 +206,8 @@ public partial class MainWindow : Window
 
             NumericKeypad.IsEnabled = true;
             PowerButton.IsEnabled = true;
+            ActionProgramKeypad.IsEnabled = true;
+            
             _selectedProgram = null;
         });
     }
@@ -254,6 +259,18 @@ public partial class MainWindow : Window
         {
             LoadCustomPrograms();
             DisplayProgress.Text = "Novo programa salvo com sucesso!";
+        }
+    }
+
+    private async void DeleteProgram_Click(object? sender, RoutedEventArgs e)
+    {
+        var deleteWindow = new DeleteProgramWindow();
+        var result = await deleteWindow.ShowDialog<bool>(this);
+
+        if (result == true)
+        {
+            LoadCustomPrograms();
+            DisplayProgress.Text = "Programa Deletado com Sucesso!";
         }
     }
 

@@ -27,5 +27,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [/home/karolline-lup/Documentos/code/painel-controle-micro-ondas/view/CreateProgramWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[/home/karolline-lup/Documentos/code/painel-controle-micro-ondas/view/DeleteProgramWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [/home/karolline-lup/Documentos/code/painel-controle-micro-ondas/view/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

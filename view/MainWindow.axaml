@@ -73,12 +73,18 @@
                                     Margin="4"
                                     Click="OnCustomProgramClick"
                                     DataContext="{Binding}"
-                                    Content="{Binding Name}" />
+                                    Content="{Binding Name}"
+                                    FontStyle="Italic" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
         </Border>
+        
+        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*" Name="ActionProgramKeypad" Margin="5">
+            <Button Name="CreateProgramButton" Content="Novo Programa" Grid.Row="1" Grid.Column="0" Margin="5" Click="CreateProgram_Click" />
+            <Button Name="DeleteProgramButton" Content="Deletar Programa" Grid.Row="1" Grid.Column="2" Margin="5" Click="DeleteProgram_Click" />
+        </Grid>
 
         <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*" Name="NumericKeypad" Margin="5">
             <Button Content="1" Grid.Row="0" Grid.Column="0" Click="OnNumberClick" />
@@ -100,8 +106,9 @@
         <Grid ColumnDefinitions="*,*,*" RowDefinitions="*" Name="ActionKeypad" Margin="5">
             <Button Name="StartButton" Content="Ligar/+30s" Grid.Row="1" Grid.Column="0" Classes="accent-green" Click="OnStartOrAddTimeClick" />
             <Button Name="CancelButton" Content="Pausar/Cancelar" Grid.Row="1" Grid.Column="2" Classes="accent-red" Click="OnPauseOrCancelClick" />
-            <Button Name="CreateProgramButton" Content="Novo Programa" Grid.Row="1" Grid.Column="1" Margin="5" Click="CreateProgram_Click" />
         </Grid>
+
+         
     </StackPanel>
     
 </Window>
