@@ -1,11 +1,10 @@
 using System;
-using System.Runtime.Intrinsics.Arm;
-using System.Text;
+using System.Linq;
 using Avalonia.Controls;
-using Avalonia.Diagnostics;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using painel_controle_micro_ondas.controller;
+using painel_controle_micro_ondas.data;
 using painel_controle_micro_ondas.enums;
 
 namespace painel_controle_micro_ondas.model;
@@ -16,6 +15,9 @@ public partial class MainWindow : Window
     private string _inputBuffer = string.Empty;
     private int _power = 10;
     private InputState _currentMode = InputState.Time;
+    private HeatingProgram? _selectedProgram;
+    private readonly DispatcherTimer _carouselText;
+    private string _fullInstructionsText = "";
 
     public MainWindow()
     {
@@ -28,6 +30,12 @@ public partial class MainWindow : Window
         _microondasController.HeatingFinished += (s, e) => UpdateDisplayAfterHeating();
         _microondasController.HeatingCancelled += (s, e) => UpdateDisplayAfterHeating();
 
+        _carouselText = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(200)
+        };
+        _carouselText.Tick += CarouselText_Tick;
+
         DisplayTime.Text = "00:00";
         DisplayProgress.Text = "";
 
@@ -37,7 +45,7 @@ public partial class MainWindow : Window
     {
         if (_microondasController.Status == StatusMicroOndas.Running || sender is not Button button)
         {
-            return; 
+            return;
         }
 
         if (_currentMode == InputState.Power && _inputBuffer.Length == 0)
@@ -57,7 +65,7 @@ public partial class MainWindow : Window
         {
             DisplayTime.Text = _inputBuffer;
         }
-        else 
+        else
         {
             string paddedDigits = _inputBuffer.PadLeft(4, '0');
             string maskedText = $"{paddedDigits.Substring(0, 2)}:{paddedDigits.Substring(2, 2)}";
@@ -70,7 +78,7 @@ public partial class MainWindow : Window
         _currentMode = InputState.Power;
         _inputBuffer = "";
         DisplayTime.Text = _power.ToString();
-        DisplayProgress.Text = "Digite a nova potência";
+        DisplayProgress.Text = "Digite a Nova Potência";
 
     }
 
@@ -78,6 +86,12 @@ public partial class MainWindow : Window
     private void OnStartOrAddTimeClick(object sender, RoutedEventArgs e)
     {
         int timeToHeat;
+        if (_selectedProgram != null)
+        {
+
+            _microondasController.StartHeating(_selectedProgram);
+            return;
+        }
 
         if (_microondasController.Status != StatusMicroOndas.Idle)
         {
@@ -92,11 +106,11 @@ public partial class MainWindow : Window
                 if (int.TryParse(_inputBuffer, out int newPower) && newPower >= 1 && newPower <= 10)
                 {
                     _power = newPower;
-                    DisplayProgress.Text = $"Potência definida: {_power}";
+                    DisplayProgress.Text = $"Potência Definida: {_power}";
                 }
                 else
                 {
-                    DisplayProgress.Text = "Erro: Potência inválida (1-10)";
+                    DisplayProgress.Text = "Erro: Potência Inválida (1-10)";
                     _inputBuffer = "";
                     return;
                 }
@@ -144,6 +158,9 @@ public partial class MainWindow : Window
             _microondasController.PauseOrCancel();
         }
 
+        NumericKeypad.IsEnabled = true;
+        PowerButton.IsEnabled = true;
+        _selectedProgram = null;
     }
 
 
@@ -157,6 +174,8 @@ public partial class MainWindow : Window
 
     private void OnHeatingProgressChanged(object? sender, string progress)
     {
+        _carouselText.Stop();
+
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             DisplayProgress.Text = progress;
@@ -164,14 +183,20 @@ public partial class MainWindow : Window
     }
     private void UpdateDisplayAfterHeating()
     {
+        _carouselText.Stop();
+
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             _inputBuffer = "";
             _power = 10;
             DisplayTime.Text = "00:00";
+
+            NumericKeypad.IsEnabled = true;
+            PowerButton.IsEnabled = true;
+            _selectedProgram = null;
         });
     }
-    
+
     private int ParseTime(string input)
     {
         string paddedInput = input.PadLeft(4, '0');
@@ -191,6 +216,52 @@ public partial class MainWindow : Window
         return totalSeconds;
     }
 
+    private void OnPresetProgramClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button clickedButton) return;
+
+        string? programNameToFind = clickedButton.Content as string;
+
+        if (string.IsNullOrEmpty(programNameToFind)) return;
+
+        var programs = PresetPrograms.GetPrograms();
+        var foundProgram = programs.FirstOrDefault(p => p.Name == programNameToFind);
+
+        if (foundProgram != null)
+        {
+            ApplyProgramSettings(foundProgram);
+        }
+
+    }
+    private void ApplyProgramSettings(HeatingProgram program)
+    {
+        _selectedProgram = program;
+
+        DisplayTime.Text = $"{program.TimeInSeconds / 60:00}:{program.TimeInSeconds % 60:00}";
+        DisplayProgress.Text = program.Instructions;
+
+        _carouselText.Stop();
+        _fullInstructionsText = program.Instructions + "   ---   ";
+        DisplayProgress.Text = _fullInstructionsText;
+
+        if (_fullInstructionsText.Length > 50) 
+        {
+            _carouselText.Start();
+        }
+
+        NumericKeypad.IsEnabled = false;
+        PowerButton.IsEnabled = false;
+    }
+    
+    private void CarouselText_Tick(object? sender, EventArgs e)
+    {
+        var currentText = DisplayProgress.Text ?? "";
+        if (currentText.Length > 1)
+        {
+            DisplayProgress.Text = currentText.Substring(1) + currentText[0];
+        }
+    }
+    
 }
 
 

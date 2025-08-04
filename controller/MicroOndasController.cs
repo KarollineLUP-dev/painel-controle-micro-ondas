@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using painel_controle_micro_ondas.enums;
+using painel_controle_micro_ondas.model;
 
 namespace painel_controle_micro_ondas.controller;
 
@@ -15,6 +12,7 @@ public class MicroOndasController
     public int Power { get; private set; }
     public StatusMicroOndas Status { get; private set; }
     public string HeatingProgress { get; private set; }
+    private HeatingProgram? _activeProgram;
 
     private readonly Timer _timer;
 
@@ -35,6 +33,10 @@ public class MicroOndasController
     
      public void StartOrAddTime()
     {
+         if (_activeProgram != null && Status == StatusMicroOndas.Running)
+        {
+            return;
+        }
         if (Status == StatusMicroOndas.Running)
         {
             TimeInSec += 30;
@@ -64,15 +66,24 @@ public class MicroOndasController
         }
     }
 
+    public void StartHeating(HeatingProgram program)
+    {
+        _activeProgram = program;
+        StartHeating(program.TimeInSeconds, program.Power);
+    }
+
     public void StartHeating(int seconds, int power)
     {
-        if (seconds < 1 || seconds > 120)
+        if (_activeProgram == null)
         {
-            throw new ArgumentOutOfRangeException(nameof(seconds), "Erro: Segundos inválida (1-120)");
-        }
-        if (power < 1 || power > 10)
-        {
-            throw new ArgumentOutOfRangeException(nameof(power), "Erro: Potência inválida (1-10)");
+            if (seconds < 1 || seconds > 120)
+            {
+                throw new ArgumentOutOfRangeException(nameof(seconds), "Erro: Segundos inválida (1-120)");
+            }
+            if (power < 1 || power > 10)
+            {
+                throw new ArgumentOutOfRangeException(nameof(power), "Erro: Potência inválida (1-10)");
+            }
         }
 
         TimeInSec = seconds;
@@ -91,9 +102,16 @@ public class MicroOndasController
     {
         if (seconds <= 0) return "";
 
-        string dotBlock = new string('.', power);
-
-        return string.Join(" ", Enumerable.Repeat(dotBlock, seconds));
+        if (_activeProgram != null)
+        {
+            string stringBlock = new string(_activeProgram.HeatingChar, power);
+            return string.Join(" ", Enumerable.Repeat(stringBlock, seconds));
+        }
+        else 
+        {
+            string dotBlock = new string('.', power);
+            return string.Join(" ", Enumerable.Repeat(dotBlock, seconds));
+        }
     }
 
     private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
@@ -121,6 +139,7 @@ public class MicroOndasController
         Status = StatusMicroOndas.Idle;
         TimeInSec = 0;
         Power = 10;
+        _activeProgram = null;
         _timer.Stop();
 
         TimeChanged?.Invoke(this, TimeInSec);
