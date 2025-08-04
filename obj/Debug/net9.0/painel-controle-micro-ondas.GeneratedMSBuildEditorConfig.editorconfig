@@ -24,5 +24,8 @@ build_property.EnableCodeStyleSeverity =
 [/home/karolline-lup/Documentos/code/painel-controle-micro-ondas/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[/home/karolline-lup/Documentos/code/painel-controle-micro-ondas/view/CreateProgramWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [/home/karolline-lup/Documentos/code/painel-controle-micro-ondas/view/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
