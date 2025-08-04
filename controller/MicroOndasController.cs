@@ -78,7 +78,7 @@ public class MicroOndasController
         TimeInSec = seconds;
         Power = power;
 
-        HeatingProgress = GenerateGroupedString(TimeInSec, Power);
+        HeatingProgress = GenerateProgressString(TimeInSec, Power);
 
         Status = StatusMicroOndas.Running;
         _timer.Start();
@@ -87,22 +87,13 @@ public class MicroOndasController
         HeatingProgressChanged?.Invoke(this, HeatingProgress);
     }
     
-    private string GenerateGroupedString(int totalDots, int power)
+    private string GenerateProgressString(int seconds, int power)
     {
-        if (totalDots <= 0) return "";
+        if (seconds <= 0) return "";
 
-        int groupSize = power + 1;
+        string dotBlock = new string('.', power);
 
-        var sb = new StringBuilder();
-        for (int i = 1; i <= totalDots; i++)
-        {
-            sb.Append('.');
-            if (i % groupSize == 0 && i < totalDots)
-            {
-                sb.Append(' ');
-            }
-        }
-        return sb.ToString();
+        return string.Join(" ", Enumerable.Repeat(dotBlock, seconds));
     }
 
     private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
@@ -111,7 +102,7 @@ public class MicroOndasController
         {
             TimeInSec--;
 
-            HeatingProgress = GenerateGroupedString(TimeInSec, Power);
+            HeatingProgress = GenerateProgressString(TimeInSec, Power);
             TimeChanged?.Invoke(this, TimeInSec);
             HeatingProgressChanged?.Invoke(this, HeatingProgress);
         }

@@ -67,22 +67,6 @@ public partial class MainWindow : Window
 
     private void OnPowerClick(object? sender, RoutedEventArgs e)
     {
-        //if (!string.IsNullOrEmpty(_inputBuffer))
-        //{
-        //    if (int.TryParse(_inputBuffer, out int newPower) && newPower >= 1 && newPower <= 10)
-        //    {
-       //         _power = newPower;
-       //         DisplayProgress.Text = $"Potência definida:{_power}";
-       //         _inputBuffer = "";
-       //         DisplayTime.Text = "00:00";
-       //     }
-       //     else
-        //    {
-         //       DisplayProgress.Text = "Erro: Potência Inválida (1-10)";
-        //        _inputBuffer = "";
-        //    }
-        //}
-
         _currentMode = InputState.Power;
         _inputBuffer = "";
         DisplayTime.Text = _power.ToString();
