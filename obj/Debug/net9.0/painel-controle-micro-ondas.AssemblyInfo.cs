@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("painel-controle-micro-ondas")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0f94b74c01c568b54609e4ada754d6eac16a6e89")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1adb7390b84ffda8ff5714f7fddc969bebb14fce")]
 [assembly: System.Reflection.AssemblyProductAttribute("painel-controle-micro-ondas")]
 [assembly: System.Reflection.AssemblyTitleAttribute("painel-controle-micro-ondas")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

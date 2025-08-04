@@ -1,0 +1,71 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="painel_controle_micro_ondas.model.CreateProgramWindow"
+        Title="Novo Programa de Aquecimento"
+        Width="400"
+        WindowStartupLocation="CenterOwner"
+        Background="#2E2E2E"
+        Foreground="White">
+
+    <Window.Styles>
+        <Style Selector="TextBlock.h1">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0,0,0,15" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="Margin" Value="0,10,0,2" />
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Padding" Value="5" />
+        </Style>
+        <Style Selector="Button">
+           <Setter Property="Background" Value="#4C4C4C" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+
+        </Style>
+        <Style Selector="Button.accent-green">
+            <Setter Property="Background" Value="#006400" />
+        </Style>
+        <Style Selector="Button.accent-red">
+            <Setter Property="Background" Value="#8B0000" />
+        </Style>
+    </Window.Styles>
+
+    <StackPanel Margin="20">
+        <TextBlock Text="Cadastrar Programa Customizado" Classes="h1" />
+
+        <TextBlock Text="Nome do Programa (*)" Classes="label" />
+        <TextBox x:Name="NameTextBox" />
+
+        <TextBlock Text="Alimento (*)" Classes="label" />
+        <TextBox x:Name="FoodTextBox" />
+
+        <TextBlock Text="Tempo (em segundos) (*)" Classes="label" />
+        <TextBox x:Name="TimeTextBox" />
+
+        <TextBlock Text="Potência (1-10) (*)" Classes="label" />
+        <TextBox x:Name="PowerTextBox" />
+
+        <TextBlock Text="Caracter de Aquecimento" Classes="label" />
+        <TextBox x:Name="HeatingCharTextBox" MaxLength="1"/>
+
+        <TextBlock Text="Instruções de Uso" Classes="label" />
+        <TextBox x:Name="InstructionsTextBox" Height="80" TextWrapping="Wrap" AcceptsReturn="True" />
+
+        <TextBlock x:Name="ErrorTextBlock" Margin="0,10,0,0" TextWrapping="Wrap" />
+
+        <Grid ColumnDefinitions="*,*,*" RowDefinitions="*" Name="ActionProgramKeypad" Margin="5">
+            <Button Name="SaveButton" Content="Salvar" Grid.Row="1" Grid.Column="0" Classes="accent-green" Click="SaveButton_Click" />
+            <Button Name="CancelButton" Content="Cancelar" Grid.Row="1" Grid.Column="2" Classes="accent-red" Click="CancelButton_Click" />
+        </Grid>
+    </StackPanel>
+</Window>

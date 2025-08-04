@@ -145,3 +145,4 @@
 /home/karolline-lup/Documentos/painel-controle-micro-ondas/obj/Debug/net9.0/painel-controle-micro-ondas.genruntimeconfig.cache
 /home/karolline-lup/Documentos/painel-controle-micro-ondas/obj/Debug/net9.0/ref/painel-controle-micro-ondas.dll
 /home/karolline-lup/Documentos/code/painel-controle-micro-ondas/obj/Debug/net9.0/painel-controle-micro-ondas.sourcelink.json
+/home/karolline-lup/Documentos/code/painel-controle-micro-ondas/bin/Debug/net9.0/data/presets.json

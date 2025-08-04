@@ -4,8 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using painel_controle_micro_ondas.controller;
-using painel_controle_micro_ondas.data;
 using painel_controle_micro_ondas.enums;
+using painel_controle_micro_ondas.service;
 
 namespace painel_controle_micro_ondas.model;
 
@@ -25,6 +25,8 @@ public partial class MainWindow : Window
 
         _microondasController = new MicroOndasController();
 
+        LoadCustomPrograms();
+
         _microondasController.TimeChanged += OnTimeChanged;
         _microondasController.HeatingProgressChanged += OnHeatingProgressChanged;
         _microondasController.HeatingFinished += (s, e) => UpdateDisplayAfterHeating();
@@ -38,7 +40,16 @@ public partial class MainWindow : Window
 
         DisplayTime.Text = "00:00";
         DisplayProgress.Text = "";
+    }
 
+    public void LoadCustomPrograms()
+    {
+        var allPrograms = ProgramService.GetAllPrograms();
+        var customPrograms = allPrograms.Where(p => p.IsCustom).ToList();
+
+        CustomProgramsItemsControl.ItemsSource = customPrograms;
+        CustomProgramsBorder.IsVisible = customPrograms.Count > 0;
+        DeleteProgramButton.IsVisible = customPrograms.Count > 0;
     }
 
     private void OnNumberClick(object? sender, RoutedEventArgs e)
@@ -82,7 +93,6 @@ public partial class MainWindow : Window
 
     }
 
-
     private void OnStartOrAddTimeClick(object sender, RoutedEventArgs e)
     {
         int timeToHeat;
@@ -90,12 +100,14 @@ public partial class MainWindow : Window
         {
 
             _microondasController.StartHeating(_selectedProgram);
+            ActionProgramKeypad.IsEnabled = false;
             return;
         }
 
         if (_microondasController.Status != StatusMicroOndas.Idle)
         {
             _microondasController.StartOrAddTime();
+            ActionProgramKeypad.IsEnabled = false;
             return;
         }
 
@@ -160,9 +172,9 @@ public partial class MainWindow : Window
 
         NumericKeypad.IsEnabled = true;
         PowerButton.IsEnabled = true;
+        ActionProgramKeypad.IsEnabled = true;
         _selectedProgram = null;
     }
-
 
     private void OnTimeChanged(object? sender, int time)
     {
@@ -181,6 +193,7 @@ public partial class MainWindow : Window
             DisplayProgress.Text = progress;
         });
     }
+
     private void UpdateDisplayAfterHeating()
     {
         _carouselText.Stop();
@@ -193,6 +206,8 @@ public partial class MainWindow : Window
 
             NumericKeypad.IsEnabled = true;
             PowerButton.IsEnabled = true;
+            ActionProgramKeypad.IsEnabled = true;
+            
             _selectedProgram = null;
         });
     }
@@ -224,7 +239,7 @@ public partial class MainWindow : Window
 
         if (string.IsNullOrEmpty(programNameToFind)) return;
 
-        var programs = PresetPrograms.GetPrograms();
+        var programs = ProgramService.GetAllPrograms();
         var foundProgram = programs.FirstOrDefault(p => p.Name == programNameToFind);
 
         if (foundProgram != null)
@@ -233,6 +248,32 @@ public partial class MainWindow : Window
         }
 
     }
+
+    private async void CreateProgram_Click(object? sender, RoutedEventArgs e)
+    {
+        var addProgramWindow = new CreateProgramWindow();
+    
+        var result = await addProgramWindow.ShowDialog<bool>(this);
+
+        if (result == true)
+        {
+            LoadCustomPrograms();
+            DisplayProgress.Text = "Novo programa salvo com sucesso!";
+        }
+    }
+
+    private async void DeleteProgram_Click(object? sender, RoutedEventArgs e)
+    {
+        var deleteWindow = new DeleteProgramWindow();
+        var result = await deleteWindow.ShowDialog<bool>(this);
+
+        if (result == true)
+        {
+            LoadCustomPrograms();
+            DisplayProgress.Text = "Programa Deletado com Sucesso!";
+        }
+    }
+
     private void ApplyProgramSettings(HeatingProgram program)
     {
         _selectedProgram = program;
@@ -244,7 +285,7 @@ public partial class MainWindow : Window
         _fullInstructionsText = program.Instructions + "   ---   ";
         DisplayProgress.Text = _fullInstructionsText;
 
-        if (_fullInstructionsText.Length > 50) 
+        if (_fullInstructionsText.Length > 50)
         {
             _carouselText.Start();
         }
@@ -252,7 +293,7 @@ public partial class MainWindow : Window
         NumericKeypad.IsEnabled = false;
         PowerButton.IsEnabled = false;
     }
-    
+
     private void CarouselText_Tick(object? sender, EventArgs e)
     {
         var currentText = DisplayProgress.Text ?? "";
@@ -261,7 +302,15 @@ public partial class MainWindow : Window
             DisplayProgress.Text = currentText.Substring(1) + currentText[0];
         }
     }
-    
+
+    private void OnCustomProgramClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Button clickedButton && clickedButton.DataContext is HeatingProgram selectedProgram)
+        {
+            ApplyProgramSettings(selectedProgram);
+        }
+    }
+
 }
 
 
